@@ -31,6 +31,20 @@ td.num{font-family:Consolas,monospace;font-variant-numeric:tabular-nums;white-sp
 #tip{position:fixed;pointer-events:none;background:var(--ink);color:#EAF1EE;font:12px Consolas,monospace;padding:6px 9px;border-radius:4px;display:none;z-index:9}
 footer{margin-top:46px;font-size:13px;color:var(--mut);border-top:1px solid var(--line);padding-top:14px;max-width:70ch}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media(max-width:640px){
+h1{font-size:30px}h1 small{font-size:13px;letter-spacing:2px}
+h2{font-size:19px;margin:30px 0 10px}
+.wrap{padding:0 14px 48px}
+header{padding:26px 0 20px}
+.tile .v{font-size:21px}
+canvas.chart{height:230px!important}
+table,tbody,tr,td{display:block;width:100%}
+tr:has(th){display:none}
+tr{border-bottom:1px solid var(--line);padding:10px 0}
+td{border-bottom:none;padding:2px 0}
+td:first-child{font-weight:700;color:var(--ink)}
+td.num{white-space:normal}
+}
 </style>
 <div id="tip"></div>
 <div class="wrap">
@@ -120,7 +134,7 @@ eqG={X,Y,w,h,P,c}}
 function yr(){const[c,x,w,h]=setup('yr');const ks=Object.keys(YEARS);const P={l:44,r:12,t:20,b:24};const vmax=Math.max(...Object.values(YEARS)),vmin=Math.min(...Object.values(YEARS));const Y=v=>P.t+(vmax-v)/(vmax-vmin)*(h-P.t-P.b);const bw=(w-P.l-P.r)/ks.length;
 x.strokeStyle=css('--line');x.beginPath();x.moveTo(P.l,Y(0));x.lineTo(w-P.r,Y(0));x.stroke();
 ks.forEach((k,i)=>{const v=YEARS[k];const bx=P.l+i*bw+bw*.18,bwid=bw*.64;const y0=Y(Math.max(0,v)),y1=Y(Math.min(0,v));x.fillStyle=v>=0?css('--pos'):css('--neg');const r=4,hh=Math.max(2,y1-y0);x.beginPath();x.roundRect(bx,y0,bwid,hh,v>=0?[r,r,0,0]:[0,0,r,r]);x.fill();
-x.fillStyle=css('--body');x.font='12px Consolas,monospace';x.textAlign='center';x.fillText((v>0?'+':'')+v+'%',bx+bwid/2,v>=0?y0-6:y1+14);
+x.fillStyle=css('--body');x.font='12px Consolas,monospace';x.textAlign='center';x.fillText((v>0?'+':'')+v+'%',bx+bwid/2,v>=0?Math.max(y0-6,12):Math.min(y1+14,h-24));
 x.fillStyle=css('--mut');x.fillText(k,bx+bwid/2,h-6)})}
 const tip=document.getElementById('tip');
 document.getElementById('eq').addEventListener('mousemove',e=>{if(!eqG)return;const r=eqG.c.getBoundingClientRect();const mx=e.clientX-r.left;let best=CURVE[0],bd=1e18;CURVE.forEach(p=>{const d=Math.abs(eqG.X(p[0])-mx);if(d<bd){bd=d;best=p}});const d=new Date(best[0]);tip.style.display='block';tip.style.left=(e.clientX+14)+'px';tip.style.top=(e.clientY-30)+'px';tip.textContent=d.toISOString().slice(0,10)+'  $'+Math.round(best[1]*SCALE).toLocaleString()});
