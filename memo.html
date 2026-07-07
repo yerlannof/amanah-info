@@ -1,21 +1,25 @@
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Amanah — меморандум</title>
 <style>body{max-width:760px;margin:40px auto;padding:0 20px;font:16px/1.6 -apple-system,'Segoe UI',Roboto,sans-serif;color:#33544C;background:#F6F8F6}
 h1{font-family:Georgia,serif;color:#0E3B33;border-bottom:2px solid #0E3B33;padding-bottom:8px}h2{font-family:Georgia,serif;color:#0E3B33;margin-top:28px}
-table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0}td,th{padding:7px 10px;border-bottom:1px solid #DCE4E0;text-align:left}
-b{color:#0E3B33}.fine{font-size:12px;color:#7A8C86;margin-top:30px}</style></head><body>
+table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0}td{padding:7px 10px;border-bottom:1px solid #DCE4E0;text-align:left;vertical-align:top}
+b{color:#0E3B33}.fine{font-size:12px;color:#7A8C86;margin-top:30px}
+@media(max-width:640px){body{margin:16px auto}td{display:block;border-bottom:none;padding:2px 0}tr{display:block;border-bottom:1px solid #DCE4E0;padding:8px 0}td:first-child{font-weight:700;color:#0E3B33}}</style></head><body>
 <h1>AMANAH — меморандум для инвестора (1 страница)</h1>
 <p><b>Что это</b>: алгоритмический спот-портфель цифровых активов. Только лонг, без плеча,</p>
 <p>без шортов, без процентного дохода — <b>соответствует нормам исламских финансов</b></p>
 <p>(инженерная классификация активов, финальный скрин — за шариатским консультантом).</p>
 <h2>Трек (честный бэктест, движок с каузальными филлами и полными издержками)</h2>
 <table>
-<tr><th>Период</th><th>янв 2020 — июль 2026 (6.5 лет)</th></tr>
-<tr><td>$10,000 →</td><td><b>≈ $235,000</b> (×23.5)</td></tr>
-<tr><td>CAGR</td><td><b>67.4%</b></td></tr>
-<tr><td>Макс. просадка</td><td><b>32.8%</b> (дневные закрытия), типичная квартальная 6–8%</td></tr>
-<tr><td>Sharpe</td><td>1.72</td></tr>
-<tr><td>По годам</td><td>2020 +173% · 2021 +335% · 2022 <b>−15%</b> · 2023 +48% · 2024 +50% · 2025 −1.5% · 2026 −2.4% (полгода)</td></tr>
+<tr><td>Период</td><td>янв 2020 — июль 2026 (6.5 лет), действующая версия v1.2</td></tr>
+<tr><td>$10,000 →</td><td><b>≈ $362,000</b> (×36.2)</td></tr>
+<tr><td>CAGR</td><td><b>79.5%</b></td></tr>
+<tr><td>Макс. просадка</td><td><b>35.6%</b> (дневные закрытия), типичная квартальная 7–10%</td></tr>
+<tr><td>Sharpe / Calmar</td><td>1.73 / 2.23</td></tr>
+<tr><td>По годам</td><td>2020 +177% · 2021 +455% · 2022 <b>−16%</b> · 2023 +46% · 2024 +66% · 2025 <b>+14%</b> · 2026 −9% (полгода)</td></tr>
 </table>
+<p>Вклад механик измерен по отдельности (атрибуция): доборы в прибыльные позиции —</p>
+<p>рычаг доходности (×24.5→×35.1), динамическое распределение капитала — рычаг</p>
+<p>стабильности медианного квартала. Взаимодействие проверено: деструктивного нет.</p>
 <p><b>Ключевой факт для риска</b>: в 2022 (BTC −65%, рынок −70…90%) система потеряла 15% —</p>
 <p>защитный режим уводит капитал в кэш ниже трендовой границы. Асимметрия</p>
 <p>«участвуем в росте / прячемся в обвал» — источник долгосрочного компаунда.</p>
