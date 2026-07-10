@@ -56,7 +56,7 @@ td.num{white-space:normal}
 <div class="tile"><div class="k">Макс. просадка</div><div class="v">35.6%</div><div class="s">путь, дневные закрытия</div></div>
 <div class="tile"><div class="k">Sharpe / Calmar</div><div class="v">1.73 / 2.23</div><div class="s">дневной · CAGR/maxDD</div></div>
 <div class="tile"><div class="k">Сателлит t-стат</div><div class="v">4.41</div><div class="s">971 сделка, PF 1.82</div></div>
-<div class="tile"><div class="k">Paper-статус</div><div class="v" style="font-size:18px"><span class="pill live">LIVE·PAPER</span></div><div class="s">$10 000 старт · cron почасово</div></div>
+<div class="tile"><div class="k">Форвард-трек</div><div class="v" style="font-size:18px"><span class="pill live">LIVE·PAPER</span></div><div class="s">$10 000 · сделки исполняются и публикуются в момент совершения</div></div>
 </div>
 </header>
 
@@ -104,6 +104,8 @@ td.num{white-space:normal}
 <tr><td>Пирамидинг A1 (+0.5× на +1R)</td><td class="num">PF 1.82→2.00 · P(×2) 7.6→11.4% · parity 0.00e+00</td><td class="ok">v1.1 В БОТЕ (07-06)</td></tr>
 <tr><td>Народные приёмы (луна, круглые числа, golden cross, ATH-пробои, дип-баи…) — 10 испытаний</td><td class="num">ни один не прошёл статистический гейт — в прод не допущены</td><td class="dead">фильтр работает</td></tr>
 <tr><td>Survivorship-аудит (наша инициатива): сигнал на 83 монетах ВНЕ юниверса, вкл. делистнутые</td><td class="num">на мёртвых и исключённых скрином классах сигнал не зарабатывает — скрин = ещё и защита доходности; решающее доказательство — форвардный трек (идёт)</td><td class="ok">сами публикуем свой bias</td></tr>
+<tr><td>Внешняя верификация: прогнозы системы ежедневно подаются в турнир хедж-фонда Numerai (две модели)</td><td class="num">независимый скоринг против тысяч квантов мира; код и данные не раскрываются — только результат</td><td class="ok">оценивает третья сторона</td></tr>
+<tr><td>Микроструктура: 230K сделок на реальных тиках (35.6M минут стакана, 3.5 года) — собственные фальсификации</td><td class="num">минутные сигналы статистически реальны, но экономически мертвы после издержек — в прод не допущены; работаем на горизонтах, где издержки не съедают эдж</td><td class="ok">знаем, где НЕ играть</td></tr>
 <tr><td>Кварталы в плюсе (W=0.5, спот)</td><td class="num">53.8% · W0.6 даёт 61.5% · сателлит-only 69.2%</td><td class="warn">на твоё решение</td></tr>
 <tr><td>Капитуляция по OI (стратегия)</td><td class="num">2025–26 отрицательна, OOS −23bps</td><td class="dead">убита гейтом</td></tr>
 <tr><td>Squeeze-фильтр входов</td><td class="num">механика реальна, морит n (106 сделок)</td><td class="dead">не принят</td></tr>
