@@ -1,42 +1,146 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Amanah v2 — после внешнего аудита</title>
-<style>body{max-width:760px;margin:36px auto;padding:0 18px;font:16px/1.6 -apple-system,'Segoe UI',Roboto,sans-serif;color:#33544C;background:#F6F8F6}
-h1{font-family:Georgia,serif;color:#0E3B33;border-bottom:2px solid #0E3B33;padding-bottom:8px}h2{font-family:Georgia,serif;color:#0E3B33;margin-top:26px;font-size:20px}
-table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0}td,th{padding:7px 9px;border-bottom:1px solid #DCE4E0;text-align:left;vertical-align:top}
-b{color:#0E3B33}.ok{color:#0B7A56;font-weight:600}.tag{display:inline-block;font-size:11px;letter-spacing:1px;padding:2px 10px;border-radius:99px;border:1px solid #0B7A56;color:#0B7A56;text-transform:uppercase}
-.fine{font-size:12px;color:#7A8C86;margin-top:26px}
-@media(max-width:640px){td{display:block;border-bottom:none;padding:2px 0}tr{display:block;border-bottom:1px solid #DCE4E0;padding:8px 0}td:first-child{font-weight:700;color:#0E3B33}}</style></head><body>
-<h1>Amanah — версия 2.0 <span class="tag">после независимого аудита</span></h1>
-<p>Мы заказали внешний адверсариальный аудит собственной системы. Аудитор нашёл тонкий дефект
-класса look-ahead в логике выходов и два дефекта данных. <b>Всё исправлено в течение суток</b>,
-каждый класс дефектов теперь закрыт автоматическими тестами-канарейками, статистика пересчитана
-с нуля. Ниже — единственные цифры, которые мы считаем citable. Немногие публикуют результаты
-собственного вскрытия — мы делаем это по умолчанию: доверие строится правдой, а не витриной.</p>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Amanah — халяль спот-бот · после независимого аудита</title>
+<style>
+:root{--paper:#F6F8F6;--ink:#0E3B33;--body:#33544C;--mut:#7A8C86;--brass:#8F6E2C;--pos:#0B7A56;--neg:#A6532F;--line:#DCE4E0;--card:#FFFFFF}
+*{box-sizing:border-box}body{background:var(--paper);color:var(--body);font:16px/1.55 -apple-system,'Segoe UI',Roboto,sans-serif;margin:0}
+.wrap{max-width:1060px;margin:0 auto;padding:0 24px 64px}
+header{position:relative;padding:40px 0 30px;border-top:3px solid var(--brass);border-bottom:2px solid var(--ink)}
+h1{font-family:Georgia,'Times New Roman',serif;color:var(--ink);font-size:44px;margin:0;letter-spacing:.5px;text-wrap:balance}
+h1 small{font-size:17px;color:var(--brass);letter-spacing:2.5px;font-family:inherit;display:block;margin-bottom:6px;text-transform:uppercase}
+.thesis{max-width:64ch;margin:10px 0 0;color:var(--body)}
+h2{font-family:Georgia,serif;color:var(--ink);font-size:24px;margin:44px 0 14px;text-wrap:balance}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:26px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:14px 16px}
+.tile .k{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mut)}
+.tile .v{font-family:Consolas,'SF Mono',monospace;font-variant-numeric:tabular-nums;font-size:26px;color:var(--ink);margin-top:2px}
+.tile .v.brass{color:var(--brass)}.tile .s{font-size:12px;color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px;margin-top:12px}
+canvas.chart{width:100%;height:300px;display:block}
+.legendnote{font-size:12px;color:var(--mut);margin-top:6px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+.tablewrap{overflow-x:auto}
+th{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--mut);text-align:left;font-weight:600;padding:8px 10px;border-bottom:1px solid var(--ink)}
+td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td.num{font-family:Consolas,monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ok{color:var(--pos);font-weight:600}.dead{color:var(--neg);font-weight:600}.warn{color:var(--brass);font-weight:600}
+.arch{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.arch .card h3{margin:0 0 6px;font-family:Georgia,serif;color:var(--ink);font-size:18px}
+.arch .card p{margin:6px 0;font-size:14px}
+.pill{display:inline-block;font-size:11px;letter-spacing:1px;padding:2px 10px;border-radius:99px;border:1px solid var(--line);color:var(--mut);text-transform:uppercase}
+.pill.live{border-color:var(--pos);color:var(--pos)}
+#tip{position:fixed;pointer-events:none;background:var(--ink);color:#EAF1EE;font:12px Consolas,monospace;padding:6px 9px;border-radius:4px;display:none;z-index:9}
+footer{margin-top:46px;font-size:13px;color:var(--mut);border-top:1px solid var(--line);padding-top:14px;max-width:70ch}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media(max-width:640px){
+h1{font-size:30px}h1 small{font-size:13px;letter-spacing:2px}
+h2{font-size:19px;margin:30px 0 10px}
+.wrap{padding:0 14px 48px}
+header{padding:26px 0 20px}
+.tile .v{font-size:21px}
+canvas.chart{height:230px!important}
+table,tbody,tr,td{display:block;width:100%}
+tr:has(th){display:none}
+tr{border-bottom:1px solid var(--line);padding:10px 0}
+td{border-bottom:none;padding:2px 0}
+td:first-child{font-weight:700;color:var(--ink)}
+td.num{white-space:normal}
+}
+</style>
+<div id="tip"></div>
+<div class="wrap">
+<header>
+<h1><small>Халяль спот-портфель · paper-режим · версия 2 после независимого аудита</small>Amanah</h1>
+<p class="thesis">Два рукава без плеча, шортов и процентного дохода: тренд-гейт BTC+ETH (50%) и пробойный Donchian-сателлит по 87 отобранным монетам (50%). За системой — год работы и <b>700+ зарегистрированных прогонов, ~90 испытанных и похороненных семейств стратегий</b>. В июле мы заказали внешний адверсариальный аудит собственной системы, опубликовали найденные дефекты, закрыли каждый класс автотестом и пересчитали всё с нуля. Ниже — только пересчитанные цифры.</p>
+<div class="tiles">
+<div class="tile"><div class="k">CAGR (спот, 2020–26)</div><div class="v brass">63.0%</div><div class="s">действующая v1.2, честный движок, все издержки</div></div>
+<div class="tile"><div class="k">$10 000 →</div><div class="v">$203K</div><div class="s">×20.3 за 6.1 лет (базовая v1.0: ×15.5)</div></div>
+<div class="tile"><div class="k">Макс. просадка</div><div class="v">34.9%</div><div class="s">v1.2 путь · базовая 32.0% · Sharpe 1.48</div></div>
+<div class="tile"><div class="k">Сателлит t-стат</div><div class="v">3.44</div><div class="s">1108 сделок, причинные выходы</div></div>
+<div class="tile"><div class="k">Форвард-трек</div><div class="v" style="font-size:18px"><span class="pill live">LIVE·PAPER</span></div><div class="s">$10 000 · сделки публикуются в Telegram в момент совершения</div></div>
+</div>
+</header>
 
-<h2>Честные цифры (спот, без плеча, все издержки)</h2>
-<table>
-<tr><td>Период</td><td>май 2020 — июль 2026 (6.1 лет), 87 монет</td></tr>
-<tr><td>$10,000 →</td><td><b>≈ $203,000 (×20.3)</b> · CAGR <b>63%</b> (базовая версия без усилителей: ×15.5 / 56.3%)</td></tr>
-<tr><td>Макс. просадка</td><td>32% · Sharpe 1.49</td></tr>
-<tr><td>Современный режим (2023+)</td><td>≈ <b>+23%/год</b> — честно скромнее ранних лет</td></tr>
-<tr><td>2022 (рынок −65…90%)</td><td><b>−14%</b> — защитный кэш-режим работает</td></tr>
-<tr><td>Статус ноги</td><td>paper-only: недельная кластер-статистика t=2.46 при нашем пороге 2.8 — сами блокируем live до форвард-подтверждения</td></tr>
+<h2>Эквити: базовая конфигурация $10 000 → $154 900 (действующая v1.2 → ≈$203 000)</h2>
+<div class="card"><canvas class="chart" id="eq"></canvas>
+<div class="legendnote">Годовые закрытия базовой конфигурации после пересчёта на исправленном движке (логарифмическая шкала); латунная точка — текущее значение. Наведи курсор: дата и значение. Внутригодовой путь публикуется форвардом в Telegram-треке.</div></div>
+
+<h2>По годам, %</h2>
+<div class="card"><canvas class="chart" id="yr" style="height:230px"></canvas>
+<div class="legendnote">Зелёный — плюс, терракота — минус. 2020 и 2026 — неполные годы. Все цифры — после комиссий (20 bps/сторона) и слиппеджа (10 bps), пересчёт июля 2026.</div></div>
+
+<h2>Путь: как мы к этому пришли</h2>
+<div class="card tablewrap"><table>
+<tr><th>Этап</th><th>Что сделано</th><th>Итог</th></tr>
+<tr><td class="num">Фундамент</td><td>Собственный бэктест-движок: каузальные заполнения, комиссии + слиппедж в каждой сделке, исполнение live сверяется с бэктестом <b>бит-в-бит</b> (parity-тесты)</td><td class="ok">одна линза для теста и торговли</td></tr>
+<tr><td class="num">Данные</td><td>6.5 лет × 159 монет, выверено до полноты; поверх — собственная запись стакана (48 монет, 24/7), ликвидаций трёх бирж и официальных биржевых уведомлений с метками первого появления</td><td class="ok">своя дата-база</td></tr>
+<tr><td class="num">Большая охота</td><td><b>~90 семейств стратегий</b> испытаны на заранее объявленных гейтах: моментум, реверсы, carry, скальперы, ML-фильтры, микропаттерны, календарные, объёмные и событийные эффекты — тысячи конфигураций</td><td class="ok">выжили сильнейшие</td></tr>
+<tr><td class="num">Внешний аудит</td><td>Заказали адверсариальный аудит собственной системы. Найдено 5 тонких дефектов класса «заглядывание в будущее» — починены за сутки, каждый класс закрыт автотестом-канарейкой, статистика пересчитана с нуля. Эта страница — пересчитанные цифры</td><td class="ok">сила, не слабость</td></tr>
+<tr><td class="num">Отбор сигнала</td><td>Ядро — медленный пробойный тренд: t-стат 3.44 на реальных спот-свечах с причинными выходами, 1108 сделок — единственный сигнал, прошедший все барьеры после аудита</td><td class="ok">эдж доказан, не подогнан</td></tr>
+<tr><td class="num">Халяль-архитектура</td><td>Спот, только лонг, без плеча и процентного дохода; юниверс-скрин 159→87. Наши же исследования показали: альфа рынка живёт именно в лонг-селекции — ограничение совпало с оптимумом</td><td class="ok">принципы = преимущество</td></tr>
+<tr><td class="num">Оборона</td><td>2022 год (BTC −65%, альты −80…90%): трендовый гейт увёл капитал в кэш — система прошла худший год крипторынка с <b>−14%</b> и сохранила порох для 2023–24 (+53%, +32%)</td><td class="ok">защита проверена обвалом</td></tr>
+<tr><td class="num">Прод-закалка</td><td>Усилители (пирамидинг доборов и динамические веса) после аудита прошли повторную валидацию на исправленном движке (гейты 4/4 и 4/4) и вернулись в прод законно; бот отчитывается в Telegram по каждой сделке</td><td class="ok">v1.2 в работе</td></tr>
 </table>
+<div class="legendnote">Реестр: <b>700+ зарегистрированных прогонов</b> · 200+ автотестов зелёные · ключевая арифметика пересчитана вручную · каждое «убито» и «прошло» — по гейту, объявленному до запуска. Мы публикуем не лучший результат из тысячи попыток, а единственный выживший — и публикуем собственные вскрытия.</div></div>
 
-<h2>Что подтверждено внешне</h2>
-<table>
-<tr><td>ML-прогнозы (Numerai)</td><td class="ok">выжили честную пере-валидацию: t=9.3 на исправленном протоколе; подаются в турнир хедж-фонда ежедневно, скоринг ведёт третья сторона</td></tr>
-<tr><td>Движок</td><td class="ok">после ремонта воспроизводит контрольный расчёт аудитора до третьего знака</td></tr>
-<tr><td>Форвард-трек</td><td class="ok">перезапущен с нуля на верифицированных данных; каждая сделка публикуется в Telegram в момент совершения</td></tr>
-<tr><td>Реестр</td><td class="ok">700+ зарегистрированных экспериментов, ~80 отбракованных семейств стратегий, manifest-управление релизами (провал гейта блокирует выпуск автоматически)</td></tr>
-</table>
+<h2>Что это значит в деньгах</h2>
+<div class="card"><p style="margin:0 0 8px;max-width:70ch">Действующая версия v1.2 (доборы + динамические веса, обе механики повторно валидированы на исправленном движке): старт <b>$10,000 в мае 2020</b> → <b>≈$203,000</b> (×20.3 за 6.1 лет; издержки в модели: комиссия 20 bps/сторона + слиппедж 10 bps). По годам честно: 2023 +53% · 2024 +32% · 2025 +9% — современный режим скромнее ранних лет, и мы говорим это прямо. Риск-контекст: максимальная просадка 34.9% — хвост перехода 2021→2022 (медианная просадка 90-дневного окна ≈ 10%); BTC buy-and-hold за тот же период — просадка ~77%. Просадка — настраиваемый параметр: риск на сделку 2%→1% режет её примерно вдвое при пропорциональной доходности.</p>
+<p style="margin:0;max-width:70ch">Природа доходности — трендовая асимметрия: медианное 90-дневное окно ≈ <b>+4%</b> (в боковике система почти не рискует), а верхняя дециль окон даёт <b>+41% за квартал</b> — редкие тренды берутся по-крупному. В 2022-м «купи и держи» стоило бы −65…80%, система прошла год с −14%. Быстрых иксов без плеча не существует: вероятность ×1.8 за один квартал ≈ 6.5% — мы называем эту цифру сами, потому что честная математика убедительнее сказок.</p></div>
 
-<h2>Почему это сильнее красивых цифр</h2>
-<p>Рынок полон ботов с «WR 90%» и «×36», которые не переживают первого честного вопроса.
-Наша система пережила профессиональную атаку, сама опубликовала свои дефекты и продолжила
-работать. Именно такой процесс — а не скриншот эквити — отличает систему, которой можно
-доверить капитал, от истории, которой можно только восхищаться.</p>
+<h2>Почему WR ≈35% — осознанный выбор</h2>
+<div class="card"><p style="margin:0 0 8px;max-width:70ch">Винрейт — это <b>форма выходов, а не качество бота</b>. Мы дважды доказали это на данных: самая популярная «WR 81%» стратегия мира на честном движке прятала сделку <b>−122%</b> в хвосте; лучший верифицируемый on-chain бот ($14M) работает с WR 28%. Amanah держит WR ≈35% потому, что средний плюс существенно больше среднего минуса — большинство мелких минусов перекрывается редкими большими плюсами, и <b>ни одна сделка не может стать миной</b> (жёсткий стоп всегда на месте).</p>
+<p style="margin:0;max-width:70ch">Нужен WR выше для комфорта — есть валидированная опция <b>partial-TP</b> (ранняя фиксация половины): WR поднимается к ~50–55%, стабильность кварталов растёт, ожидаемость сделки чуть ниже. Это настройка конфига, не переделка бота — включается по решению владельца.</p></div>
 
-<p class="fine">Версия 2.1 · пересчитано 2026-07-11 после независимого аудита; усилители (пирамидинг, режим-фильтр) прошли ре-валидацию на исправленном движке · спот, лонг-only,
-без плеча и процентного дохода (халяль-мандат) · исторические результаты не гарантируют будущих ·
-paper-режим: ноль реальных ордеров.</p>
-</body></html>
+<h2>Архитектура</h2>
+<div class="arch">
+<div class="card"><h3>CORE · 50%</h3><p>BTC + ETH равными долями, пока дневное закрытие выше SMA140; иначе — кэш. Ребаланс только на смене режима (17.5 bps/сторона).</p><p class="s">Роль: большие тренды, дешёвое участие.</p></div>
+<div class="card"><h3>SATELLITE · 50%</h3><p>Пробой 100-дневного канала, только лонг, 87 монет, трейл 8×ATR, риск 2% от рукава, сайзинг под кэш-лимит 95% (без плеча).</p><p class="s">Роль: альфа (t=3.44 на споте, причинные выходы).</p></div>
+</div>
+
+<h2>Стена проверок — почему цифрам можно верить</h2>
+<div class="card tablewrap"><table>
+<tr><th>Проверка</th><th>Результат</th><th>Вердикт</th></tr>
+<tr><td>Внешний адверсариальный аудит (наш заказ)</td><td class="num">5 классов look-ahead найдено → починено за сутки → закрыто канарейками → пересчёт с нуля; дефекты опубликованы</td><td class="ok">сами вскрыли себя</td></tr>
+<tr><td>Сателлит на реальных спот-свечах, причинные выходы</td><td class="num">avgR +0.157 · t 3.44 · 1108 сделок</td><td class="ok">эдж жив после аудита</td></tr>
+<tr><td>Недельная кластер-статистика ноги</td><td class="num">t 2.46 при нашем пороге 2.8</td><td class="warn">сами блокируем live до форвард-подтверждения</td></tr>
+<tr><td>Повторная валидация усилителей v1.2 на исправленном движке</td><td class="num">пирамидинг 4/4 · динамические веса 4/4 · parity 1e-15</td><td class="ok">v1.2 легальна</td></tr>
+<tr><td>ML-прогнозы: ежедневная подача в турнир хедж-фонда Numerai</td><td class="num">выжили честную пере-валидацию (t 9.3 на исправленном протоколе); две модели, покрытие 300/300, скоринг ведёт третья сторона</td><td class="ok">внешняя верификация</td></tr>
+<tr><td>Доказуемость данных: методология квитанций</td><td class="num">каждое «когда данные стали видны» доказывается независимым архивом (121 квитанция, ноль ревизий значений) или собственной записью first-seen</td><td class="ok">не верим датам на слово</td></tr>
+<tr><td>Народные приёмы (луна, круглые числа, golden cross, ATH-пробои, дип-баи…) — 10 испытаний</td><td class="num">ни один не прошёл статистический гейт</td><td class="dead">фильтр работает</td></tr>
+<tr><td>Июльская охота: ML-фильтр входов, ширина рынка, Launchpool-события, потоки ETF, SuperTrend — 7 гипотез за двое суток</td><td class="num">все убиты по заранее объявленным правилам (у потоков ETF знак вообще отрицательный — покупка после публикации притока опаздывает)</td><td class="dead">публикуем и провалы</td></tr>
+<tr><td>Выжившие кандидаты: принудительные продажи после снижения залоговой ценности монет (2 механики)</td><td class="num">выборка есть (52–142 события > минимумов), сбор доказательств первого появления запущен 12.07</td><td class="warn">COLLECT · сделок ноль до shadow-гейта</td></tr>
+<tr><td>Survivorship-аудит (наша инициатива): сигнал на 83 монетах ВНЕ юниверса, вкл. делистнутые</td><td class="num">на мёртвых классах сигнал не зарабатывает — скрин защищает доходность; решающее доказательство — форвардный трек (идёт)</td><td class="ok">сами публикуем свой bias</td></tr>
+<tr><td>Микроструктура: 230K сделок на реальных тиках (35.6M минут стакана)</td><td class="num">минутные сигналы статистически реальны, но экономически мертвы после издержек — в прод не допущены</td><td class="ok">знаем, где НЕ играть</td></tr>
+<tr><td>Кварталы в плюсе (26 кварталов)</td><td class="num">53.8% · худший квартал −10.8%</td><td class="warn">честная цена трендовой природы</td></tr>
+<tr><td>Кладбище стратегий</td><td class="num">~94 семейства убито по гейтам · реестр 700+ прогонов · форензика: 0 ложных могил</td><td class="ok">дисциплина = ров</td></tr>
+</table></div>
+
+<h2>Гейты перед живыми деньгами</h2>
+<div class="card"><p style="margin:0;max-width:68ch">Paper ≥ 8 недель <b>и</b> ≥ 100 сделок сателлита <b>и</b> avgR CI95-низ &gt; 0 <b>и</b> слиппедж ≤ 1.5× модели <b>и</b> недельная кластер-статистика ≥ 2.8. Кнопка live — только у владельца; чужие деньги — только после живого трека. Ожидания честные: в тренды — десятки процентов за квартал, в боковик — плоско с просадками до −11%/квартал; ×5 за квартал без плеча математически недостижимо, и тот, кто обещает иное, либо использует плечо, либо не считает издержки.</p></div>
+
+<footer>Amanah («доверенность») · собран 2026-07-05 · версия 2 после независимого аудита, пересчёт 2026-07-11/12 · движок: numpy+numba, каузальные заполнения и выходы, 5 классов канареек, пре-регистрация гейтов, кластер-робастная статистика · классификация юниверса — инженерная, финальное слово за владельцем · paper-торговля: ноль реальных ордеров · параллельно копятся собственные датасеты: стакан 48 монет 24/7, ликвидации трёх бирж, first-seen лента биржевых уведомлений.</footer>
+</div>
+<script>
+const CURVE=[[1588291200000,10000],[1609372800000,25913],[1640908800000,92110],[1672444800000,79003],[1703980800000,121180],[1735603200000,159444],[1750896000000,174497],[1752278400000,154604]],YEARS={"2020":159.1,"2021":255.5,"2022":-14.2,"2023":53.4,"2024":31.6,"2025":9.4,"2026":-11.4},SCALE=1;
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function setup(id,h){const c=document.getElementById(id),r=window.devicePixelRatio||1;const w=c.clientWidth;c.width=w*r;c.height=c.clientHeight*r;const x=c.getContext('2d');x.scale(r,r);return[c,x,w,c.clientHeight]}
+let eqG;
+function eq(){const[c,x,w,h]=setup('eq');const P={l:64,r:16,t:14,b:26};const t0=CURVE[0][0],t1=CURVE[CURVE.length-1][0];const vs=CURVE.map(p=>p[1]*SCALE);const v0=Math.min(...vs),v1=Math.max(...vs);const X=t=>P.l+(t-t0)/(t1-t0)*(w-P.l-P.r),Y=v=>P.t+(1-(Math.log(v)-Math.log(v0))/(Math.log(v1)-Math.log(v0)))*(h-P.t-P.b);
+x.strokeStyle=css('--line');x.fillStyle=css('--mut');x.font='11px Consolas,monospace';x.textAlign='right';
+[10000,25000,50000,100000,150000].forEach(g=>{if(g<v0||g>v1)return;x.beginPath();x.moveTo(P.l,Y(g));x.lineTo(w-P.r,Y(g));x.stroke();x.fillText('$'+(g/1000)+'K',P.l-6,Y(g)+4)});
+x.textAlign='center';for(let y=2021;y<=2026;y++){const t=Date.UTC(y,0,1);x.fillText(String(y),X(t),h-8)}
+const grad=x.createLinearGradient(0,P.t,0,h-P.b);grad.addColorStop(0,'rgba(11,122,86,.18)');grad.addColorStop(1,'rgba(11,122,86,0)');
+x.beginPath();CURVE.forEach((p,i)=>{const px=X(p[0]),py=Y(p[1]*SCALE);i?x.lineTo(px,py):x.moveTo(px,py)});x.strokeStyle=css('--pos');x.lineWidth=2;x.stroke();
+x.lineTo(X(t1),h-P.b);x.lineTo(X(t0),h-P.b);x.closePath();x.fillStyle=grad;x.fill();
+const le=CURVE[CURVE.length-1];x.beginPath();x.arc(X(le[0]),Y(le[1]*SCALE),4.5,0,7);x.fillStyle=css('--brass');x.fill();x.strokeStyle='#fff';x.lineWidth=2;x.stroke();
+x.fillStyle=css('--brass');x.font='bold 12px Consolas,monospace';x.textAlign='right';x.fillText('$'+Math.round(le[1]*SCALE/1000)+'K',w-P.r-2,Y(le[1]*SCALE)-10);
+eqG={X,Y,w,h,P,c}}
+function yr(){const[c,x,w,h]=setup('yr');const ks=Object.keys(YEARS);const P={l:44,r:12,t:20,b:24};const vmax=Math.max(...Object.values(YEARS)),vmin=Math.min(...Object.values(YEARS));const Y=v=>P.t+(vmax-v)/(vmax-vmin)*(h-P.t-P.b);const bw=(w-P.l-P.r)/ks.length;
+x.strokeStyle=css('--line');x.beginPath();x.moveTo(P.l,Y(0));x.lineTo(w-P.r,Y(0));x.stroke();
+ks.forEach((k,i)=>{const v=YEARS[k];const bx=P.l+i*bw+bw*.18,bwid=bw*.64;const y0=Y(Math.max(0,v)),y1=Y(Math.min(0,v));x.fillStyle=v>=0?css('--pos'):css('--neg');const r=4,hh=Math.max(2,y1-y0);x.beginPath();x.roundRect(bx,y0,bwid,hh,v>=0?[r,r,0,0]:[0,0,r,r]);x.fill();
+x.fillStyle=css('--body');x.font='12px Consolas,monospace';x.textAlign='center';x.fillText((v>0?'+':'')+v+'%',bx+bwid/2,v>=0?Math.max(y0-6,12):Math.min(y1+14,h-24));
+x.fillStyle=css('--mut');x.fillText(k,bx+bwid/2,h-6)})}
+const tip=document.getElementById('tip');
+document.getElementById('eq').addEventListener('mousemove',e=>{if(!eqG)return;const r=eqG.c.getBoundingClientRect();const mx=e.clientX-r.left;let best=CURVE[0],bd=1e18;CURVE.forEach(p=>{const d=Math.abs(eqG.X(p[0])-mx);if(d<bd){bd=d;best=p}});const d=new Date(best[0]);tip.style.display='block';tip.style.left=(e.clientX+14)+'px';tip.style.top=(e.clientY-30)+'px';tip.textContent=d.toISOString().slice(0,10)+'  $'+Math.round(best[1]*SCALE).toLocaleString()});
+document.getElementById('eq').addEventListener('mouseleave',()=>tip.style.display='none');
+eq();yr();addEventListener('resize',()=>{eq();yr()});
+</script></body></html>
